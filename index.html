@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>loading-screen</title>
+  </head>
+  <body>
+    <video id="bg-video" autoplay playsinline></video>
+    <div id="app"></div>
+    <script type="module">
+      import { CONFIG } from "/src/config/config.js";
+
+      const videos = CONFIG.videos;
+      let lastVideoIndex = -1;
+      let currentVideoData = null;
+
+      const getRandomVideo = () => {
+        let newIndex;
+        do {
+          newIndex = Math.floor(Math.random() * videos.length);
+        } while (newIndex === lastVideoIndex && videos.length > 1);
+        lastVideoIndex = newIndex;
+        currentVideoData = videos[newIndex];
+        return currentVideoData;
+      };
+
+      const loadVideo = () => {
+        const video = document.getElementById("bg-video");
+        const videoData = getRandomVideo();
+        video.src = videoData.src;
+        video.load();
+        video.play();
+
+        window.dispatchEvent(
+          new CustomEvent("videoChanged", {
+            detail: { artist: videoData.artist, song: videoData.song },
+          })
+        );
+      };
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const video = document.getElementById("bg-video");
+        const videoData = getRandomVideo();
+
+        video.src = videoData.src;
+        video.load();
+
+        video.addEventListener("ended", loadVideo);
+        window.addEventListener("loadNextVideo", loadVideo);
+
+        setTimeout(() => {
+          window.dispatchEvent(
+            new CustomEvent("videoChanged", {
+              detail: { artist: videoData.artist, song: videoData.song },
+            })
+          );
+        }, 100);
+      });
+    </script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
