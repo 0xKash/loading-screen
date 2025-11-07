@@ -1,12 +1,12 @@
 export const CONFIG = {
   videos: [
     {
-      src: "/src/music/video1.mp4",
+      src: "/video1.mp4",
       artist: "Lil Pump",
       song: "Gucci Gang",
     },
     {
-      src: "/src/music/video2.mp4",
+      src: "/video2.mp4",
       artist: "21 Savage",
       song: "Glock In My Lap",
     },
